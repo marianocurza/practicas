@@ -5,11 +5,6 @@ ini_set('display_errors', 'stdout');
 require_once 'header.php';
 require_once 'clases/ListaPersonas.php';
 ?>
-<pre>
-	<?php
-	     var_dump($_GET);
-	?>
-</pre>
 	<div class="row">
 		<div class="col-md-12">
 			<form role="form" class="form-inline" method="get">
@@ -37,21 +32,19 @@ require_once 'clases/ListaPersonas.php';
 							}else {
 								echo "";
 							} 
-					?> "/>
+					?>"/>
 				</div>
 				<div class="checkbox">
-					 
-					<label>
-						<input type="checkbox" name="estudiante" id="estudiante" value="S" 
-						<?php
-							if(isset($_GET["estudiante"])){
-								echo "checked";
-							} 
-						
-						?> /> Es Estudiante?
+					<label for="estudiante">
+						¿Es Estudiante?
 					</label>
+					 <select name="estudiante" id="estudiante">
+					 	<option value="" <?= empty($_GET['estudiante'])?'selected':''; ?>  > - </option>
+					 	<option value="S" <?= !empty($_GET['estudiante']) && $_GET['estudiante']=='S'?'selected':'';  ?>  > Si </option>
+					 	<option value="N" <?= !empty($_GET['estudiante']) && $_GET['estudiante']=='N'?'selected':'';    ?> > No </option>
+					 </select>
 				</div> 
-				<button type="submit" class="btn btn-primary">
+				<button type="submit" class="btn btn-primary" name="boton">
 					Buscar
 				</button>
 			</form>
@@ -78,23 +71,25 @@ require_once 'clases/ListaPersonas.php';
 				</thead>
 				<tbody>
 					<?php
-						foreach (app\clases\ListaPersonas::obtenerListaPersonas() as $persona) {
+						foreach (app\clases\ListaPersonas::obtenerListaPersonasFiltrada($_GET) as $persona) {
 							// persona es un arreglo que contiene correo, apellido y estudiante
-							echo "
-								<tr>
-									<td>
-										#
-									</td>
-									<td>
-										{$persona["correo"]}
-									</td>
-									<td>
-										{$persona["apellido"]}
-									</td>
-									<td>
-										{$persona["estudiante"]}
-									</td>
-								</tr>";
+
+							  	echo "
+									<tr>
+										<td>
+											#
+										</td>
+										<td>
+											{$persona["correo"]}
+										</td>
+										<td>
+											{$persona["apellido"]}
+										</td>
+										<td>
+											{$persona["estudiante"]}
+										</td>
+									</tr>";
+							
 						}
 					?>
 				</tbody>
