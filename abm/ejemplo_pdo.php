@@ -1,4 +1,5 @@
 <?php
+echo "<pre>";
 // en este ejemplo separamos la configuración en constantes para que sea más claro al momento
 // de elegir
 const SQLITE = 1;
@@ -8,7 +9,7 @@ const MYSQL = 2;
 // elegimos el modo, debido a que pueden haber diferencias en las instrucciones de creación
 // de tabla,por ejemplo noten la diferencia en AUTOINCREMENT y AUTO_INCREMENT
 // además de que varía la cadena dsn de PDO
-$modo = MYSQL;
+$modo = SQLITE;
 
 if($modo === SQLITE){
     $db = new PDO('sqlite:curzadb-pdo.sqlite');
@@ -40,10 +41,18 @@ $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 // PDO tiene una sintaxis casi idéntica a sqlite, en este caso vemos que para invocar
 // transacciones no hay casi cambios
 $db->exec('BEGIN');
-$db->query('INSERT INTO `visits` (`user_id`, `url`, `time`)
+$resultadoEjecucion = $db->query('INSERT INTO `visits` (`user_id`, `url`, `time`)
     VALUES (42, "/test", "2017-01-14 10:11:23")');
-$db->query('INSERT INTO `visits` (`user_id`, `url`, `time`)
+// de las operaciones realizadas (sobre todo insert,delete,update) podemos obtener
+// el ultimo id generado en (en los inserts) y la cantidad de filas afectadas para las tres operaciones
+// no se recomienda usar este enfoque para los SELECT
+echo 'último id:'.$db->lastInsertId()."\n\r";
+echo 'filas afectadas:'.$resultadoEjecucion->rowCount()."\n\r";
+
+$resultadoEjecucion2 = $db->query('INSERT INTO `visits` (`user_id`, `url`, `time`)
     VALUES (42, "/test2", "2017-01-14 10:11:44")');
+echo 'último id:'.$db->lastInsertId()."\n\r";
+echo 'filas afectadas:'.$resultadoEjecucion2->rowCount()."\n\r";
 $db->exec('COMMIT');
 
 
@@ -57,11 +66,14 @@ $statement->bindValue(':url', '/test');
 $statement->bindValue(':time', date('Y-m-d H:i:s'));
 $statement->execute(); // you can reuse the statement with different values
 
+echo 'último id:'.$db->lastInsertId()."\n\r";
+echo 'filas afectadas:'.$statement->rowCount()."\n\r";
+
 // PDO También soporta el binding de valores directos y el uso de posiciones
 $statement = $db->prepare('SELECT * FROM `visits` WHERE `user_id` = ? AND `time` >= ?');
 $statement->bindValue(1, 42);
 $statement->bindValue(2, '2017-01-14');
-$statement->execute();
+$statement->execute();  
 
 // a diferencia de sqlite, en pdo el statement es el que se encarga de hacer el fetch posterior
 // a la ejecución, también podemos definir el modo de fetchin. en este caso, asociativo
@@ -97,3 +109,4 @@ $userCount = $db->query('SELECT COUNT(DISTINCT `user_id`) FROM `visits`');
 echo("User count: {$userCount->fetchColumn()}\n");
 echo("\n");
 
+echo "</pre>";

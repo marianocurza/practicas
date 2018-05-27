@@ -1,4 +1,6 @@
 <?php
+echo "<pre>";
+
 // Abrir la base, mysql NO crea la base si no existe
 $db = new mysqli('curza_mimysql_1', 'root', 'root', 'curzadb');
 //verificamos que haya sido una conexión exitosa
@@ -20,10 +22,18 @@ $db->query('CREATE TABLE IF NOT EXISTS `visits` (
 $db->query('BEGIN');
 $db->query('INSERT INTO `visits` (`user_id`, `url`, `time`)
     VALUES (42, "/test", "2017-01-14 10:11:23")');
+// de las operaciones realizadas (sobre todo insert,delete,update) podemos obtener
+// el ultimo id generado en (en los inserts) y la cantidad de filas afectadas para las tres operaciones
+// no se recomienda usar este enfoque para los SELECT
+echo 'número de filas:'.$db->affected_rows."\n\r";
+echo 'último id:'.$db->insert_id."\n\r";
 $db->query('INSERT INTO `visits` (`user_id`, `url`, `time`)
     VALUES (42, "/test2", "2017-01-14 10:11:44")');
+echo 'número de filas:'.$db->affected_rows."\n\r";
+echo 'último id:'.$db->insert_id."\n\r";
 $db->query('COMMIT');
-echo 'número de filas:'.$db->affected_rows;
+
+
 
 // mysql soporta el binding de parámetros, pero NO NOMBRADOS, es decir solamente
 // soporta binding por posición
@@ -36,6 +46,9 @@ $fechahora = date('Y-m-d H:i:s');
 // el tipo, por ejemplo la i es por integer y la s por string
 $statement->bind_param('iss', $uid, $url, $fechahora);
 $statement->execute();
+
+echo 'número de filas:'.$db->affected_rows."\n\r";
+echo 'último id:'.$db->insert_id."\n\r";
 
 
 // También podemos usar el binding para la selección
@@ -90,4 +103,4 @@ echo("\n");
 // Al igual que con sqlite, cerramos la conexión. También se cierra sola al finalizar el script
 
 $db->close();
- 
+ echo "</pre>";
