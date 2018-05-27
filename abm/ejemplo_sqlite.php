@@ -1,43 +1,34 @@
 <?php
-// This file walks you through the most common features of PHP's SQLite3 API.
-// The code is runnable in its entirety and results in an `analytics.sqlite` file.
+
+// Abrir la base o crearla si no existe
+$db = new SQLite3('curzadb.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
 
 
-// Create a new database, if the file doesn't exist and open it for reading/writing.
-// The extension of the file is arbitrary.
-$db = new SQLite3('analytics.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
-
-
-// Create a table.
-
-$db->query('CREATE TABLE IF NOT EXISTS "visits" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "user_id" INTEGER,
-    "url" VARCHAR,
-    "time" DATETIME
+// Crear la tabla si no existe
+$db->query('CREATE TABLE IF NOT EXISTS `visits` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    `user_id` INTEGER,
+    `url` VARCHAR,
+    `time` DATETIME
 )');
 
 
-// Insert some sample data.
-//
-// It's advisable to wrap related queries in a transaction (BEGIN and COMMIT),
-// even if you don't care about atomicity.
-// If you don't do this, SQLite automatically wraps every single query
-// in a transaction, which slows down everything immensely. If you're new to SQLite,
-// you may be surprised why the INSERTs are so slow.
+// Insertando datos de ejemplo. SQLITE soporta transacciones (y en sqlite es mejor usarlas por
+// rendimiento
 
 $db->exec('BEGIN');
-$db->query('INSERT INTO "visits" ("user_id", "url", "time")
+$db->query('INSERT INTO `visits` (`user_id`, `url`, `time`)
     VALUES (42, "/test", "2017-01-14 10:11:23")');
-$db->query('INSERT INTO "visits" ("user_id", "url", "time")
+$db->query('INSERT INTO `visits` (`user_id`, `url`, `time`)
     VALUES (42, "/test2", "2017-01-14 10:11:44")');
 $db->exec('COMMIT');
 
 
-// Insert potentially unsafe data with a prepared statement.
-// You can do this with named parameters:
+// Estrategia para usar bindinng de parámetros, que aporta seguridad a la hora de insgresar
+// información a la bd
+// Se pueden usar parámetros con nombre
 
-$statement = $db->prepare('INSERT INTO "visits" ("user_id", "url", "time")
+$statement = $db->prepare('INSERT INTO `visits` (`user_id`, `url`, `time`)
     VALUES (:uid, :url, :time)');
 $statement->bindValue(':uid', 1337);
 $statement->bindValue(':url', '/test');
@@ -45,56 +36,60 @@ $statement->bindValue(':time', date('Y-m-d H:i:s'));
 $statement->execute(); // you can reuse the statement with different values
 
 
-// Fetch today's visits of user #42.
-// We'll use a prepared statement again, but with numbered parameters this time:
+// Selección de información usando parámetros. Esta vez usando posiciónes
 
-$statement = $db->prepare('SELECT * FROM "visits" WHERE "user_id" = ? AND "time" >= ?');
+$statement = $db->prepare('SELECT * FROM `visits` WHERE `user_id` = ? AND `time` >= ?');
 $statement->bindValue(1, 42);
 $statement->bindValue(2, '2017-01-14');
 $result = $statement->execute();
 
+// se puede establecer el formato de la obtención, en este caso asociativo
+// Es decir, si en la consulta existe la columna nombre, en el arreglo va existir
+// una clave nombre asociada
 echo("Get the 1st row as an associative array:\n");
 print_r($result->fetchArray(SQLITE3_ASSOC));
 echo("\n");
 
+// también se puede obtener un array indexado, es decir, si el id es la primer columna de la 
+// consulta, el valor del id va a estar en la posición 0 del arreglo
 echo("Get the next row as a numeric array:\n");
 print_r($result->fetchArray(SQLITE3_NUM));
 echo("\n");
 
-// If there are no more rows, fetchArray() returns FALSE.
+// Si no hay más datos, fetchArray devuelve falso
 
-// free the memory, this in NOT done automatically, while your script is running
+// Se puede liberar la memoria
+
 $result->finalize();
 
 
-// A useful shorthand for fetching a single row as an associative array.
-// The second parameter means we want all the selected columns.
-//
-// Watch out, this shorthand doesn't support parameter binding, but you can
-// escape the strings instead.
-// Always put the values in SINGLE quotes! Double quotes are used for table
-// and column names (similar to backticks in MySQL).
+// Una atajo útil para buscar una sola fila como arreglo asociativa.
+// El segundo parámetro significa que queremos todas las columnas seleccionadas.
 
-$query = 'SELECT * FROM "visits" WHERE "url" = \'' .
+// Cuidado, esta abreviatura no admite el binding de parámetros, pero se pueden
+// escapar las cadenas en su lugar.
+// ¡Siempre coloque los valores en comillas simples! Las comillas dobles se usan para la tabla
+// y nombres de columna (similares a los backticks en MySQL).
+
+$query = 'SELECT * FROM `visits` WHERE `url` = \'' .
     SQLite3::escapeString('/test') .
-    '\' ORDER BY "id" DESC LIMIT 1';
+    '\' ORDER BY `id` DESC LIMIT 1';
 
 $lastVisit = $db->querySingle($query, true);
 
 echo("Last visit of '/test':\n");
-print_r($lastVisit);
+print_r($lastVisit['time']);
 echo("\n");
 
 
-// Another useful shorthand for retrieving just one value.
+// Otra forma práctica de devolver un solo valor a partir de una consulta
 
-$userCount = $db->querySingle('SELECT COUNT(DISTINCT "user_id") FROM "visits"');
+$userCount = $db->querySingle('SELECT COUNT(DISTINCT `user_id`) FROM `visits`');
 
 echo("User count: $userCount\n");
 echo("\n");
 
 
-// Finally, close the database.
-// This is done automatically when the script finishes, though.
+// Cerramos la base, esto también se hace automáticamente al finalizar el script
 
 $db->close();
