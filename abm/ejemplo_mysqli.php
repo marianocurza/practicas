@@ -2,7 +2,7 @@
 echo "<pre>";
 
 // Abrir la base, mysql NO crea la base si no existe
-$db = new mysqli('curza_mimysql_1', 'root', 'root', 'curzadb');
+$db = new mysqli('127.0.0.1', 'marianosebastian', '', 'curza');
 //verificamos que haya sido una conexión exitosa
 if($db->connect_error)
 {

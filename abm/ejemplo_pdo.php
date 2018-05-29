@@ -9,7 +9,7 @@ const MYSQL = 2;
 // elegimos el modo, debido a que pueden haber diferencias en las instrucciones de creación
 // de tabla,por ejemplo noten la diferencia en AUTOINCREMENT y AUTO_INCREMENT
 // además de que varía la cadena dsn de PDO
-$modo = SQLITE;
+$modo = MYSQL;
 
 if($modo === SQLITE){
     $db = new PDO('sqlite:curzadb-pdo.sqlite');
@@ -21,7 +21,7 @@ if($modo === SQLITE){
     )');
     
 }elseif($modo=== MYSQL){
-    $db = new PDO("mysql:dbname=curzadb;host=curza_mimysql_1", 'root', 'root');
+    $db = new PDO("mysql:dbname=curza;host=127.0.0.1", 'marianosebastian', '');
     $db->query('CREATE TABLE IF NOT EXISTS `visits` (
         `id` INTEGER AUTO_INCREMENT PRIMARY KEY, 
         `user_id` VARCHAR(30),
