@@ -44,6 +44,7 @@ use app\clases\Persona;
             <th>Acciones</th>
           </tr>
         </thead>
+        <tbody>
         <?php
           // recorrer la lista
           //$listaAmigos = $persona->getInformacionAmigos();
@@ -51,7 +52,6 @@ use app\clases\Persona;
           //{
             
         ?>
-        <tbody>
           <tr>
             <td>
               <span class="name">Nombre Amigo 1</span>
