@@ -1,0 +1,20 @@
+[02-Jun-2018 23:56:21 UTC] site en raiz:/practicas/unidadtres/
+[02-Jun-2018 23:56:29 UTC] site en raiz:/practicas/unidadtres/
+[02-Jun-2018 23:56:30 UTC] site en raiz:/practicas/unidadtres/
+[02-Jun-2018 23:56:34 UTC] site en raiz:/practicas/unidadtres/
+[02-Jun-2018 23:58:25 UTC] site en raiz:/practicas/unidadtres/
+[02-Jun-2018 23:59:37 UTC] site en raiz:/practicas/unidadtres/
+[02-Jun-2018 23:59:48 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 00:00:16 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 00:00:28 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 00:00:34 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 00:02:54 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 00:03:05 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 00:03:10 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 00:03:23 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 00:03:26 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 00:03:41 UTC] site en raiz:/practicas/unidadtres/
+[03-Jun-2018 15:33:43 UTC] PHP Fatal error:  Uncaught Error: Class 'Persona' not found in /home/ubuntu/workspace/practicas/unidadtres/index.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/ubuntu/workspace/practicas/unidadtres/index.php on line 16

@@ -74,7 +74,7 @@ class Amigo implements IRegistro
     public static function buscarPorId(int $id): self
     {
         $conexion = Db::getConexion();
-        $stmt = $conexion->prepare('select * from amigo where id = :id');
+        $stmt = $conexion->prepare('select * from amigos where id = :id');
         $stmt->bindValue(':id', $id);
         $stmt->execute();
         $amigoArray = $stmt->fetch();
