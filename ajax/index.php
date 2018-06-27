@@ -21,7 +21,7 @@ require_once 'header.php';
                 </label>
                 <input class="form-control" id="apellido" name="apellido" type="text" value=""/>
             </div>
-            <div class="checkbox">
+            <div class="form-group checkbox">
                 <label for="estudiante">
                     ¿Es Estudiante?
                 </label>
