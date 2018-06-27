@@ -64,15 +64,29 @@ require_once 'header.php';
 <script>
     
     document.addEventListener('DOMContentLoaded', function(){
+        
         $('#formulario-personas').on('submit', function(evento){
             evento.preventDefault();
             var parametros = $('#formulario-personas').serialize();
-            var url = 'acciones/buscar-personas.php?' + parametros;
-            $.get(url).then(function(data){
-                $('#tabla-personas tbody').html(data);
+            
+            console.log('comenzando el submit');
+
+            $.ajax({
+                method: "GET",
+                url: "acciones/buscar-personas.php",
+                data: parametros               
             })
-        });       
-       
+            .done(function(data){
+                    $('#tabla-personas tbody').html(data);
+                })
+            .fail(function(data){
+                console.log(data);
+                alert('Error');
+            });
+
+            console.log('finalizando el submit');
+            
+        });
     }, false);
 </script>
 
