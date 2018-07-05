@@ -22,6 +22,9 @@ use app\clases\MensajesSesion;
 <div class="row">
     <p><?=MensajesSesion::getMensajes() ?></p>
 </div>
+<div class="row info">
+    <?= phpinfo() ?>
+</div>
 
 <script>
 

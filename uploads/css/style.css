@@ -5,3 +5,7 @@
 .container-fluid .row .cabecera h3 {
     line-height: 100px;
 }
+.info {
+    display: flex;
+    justify-content: center;
+}
